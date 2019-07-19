@@ -5,19 +5,34 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { HomePage } from './home.page';
+import { SearchComponent } from './search/search.component';
 
+const routes=[
+  {
+    path: '',
+    children:[
+      {
+        path:"",
+        component: HomePage,
+      },
+      {
+        path:':service-provider',
+        component: SearchComponent,
+      }
+    ]
+  }
+
+]
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        component: HomePage
-      }
-    ])
+    RouterModule.forChild(routes)
   ],
-  declarations: [HomePage]
+  declarations: [
+    HomePage,
+    SearchComponent
+  ]
 })
 export class HomePageModule {}
