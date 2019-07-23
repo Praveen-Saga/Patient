@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <ion-back-button defaultHref="home"></ion-back-button>
+        </ion-buttons>
+        <ion-title>
+          Confirm Appointment
+        </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card  >
+      <ion-card-header>
+        <ion-card-title text-center text-uppercase>
+        {{loadedUserDetails.name}}
+        </ion-card-title>
+      </ion-card-header>
+      <ion-grid text-center style="font-size:1.2em;">
+      <ion-row>
+        <ion-col>
+           <b>Phone:</b> {{loadedUserDetails.phone}}
+        </ion-col>
+      </ion-row>
+      <ion-row>
+          <ion-col>
+              <b>Email:</b>  {{loadedUserDetails.email}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <b>Address:</b>  {{loadedUserDetails.address}}
+            </ion-col>
+          </ion-row>
+    </ion-grid>
+  </ion-card>
+
+  <ion-card  >
+      <ion-card-header>
+        <ion-card-title text-center text-uppercase>
+        {{loadedActorDetails?.name}}
+        </ion-card-title>
+      </ion-card-header>
+      <ion-grid text-center style="font-size:1.2em;">
+      <ion-row>
+        <ion-col>
+           <b>Speciality:</b> {{loadedActorDetails?.speciality}}
+        </ion-col>
+      </ion-row>
+      <ion-row>
+          <ion-col>
+              <b>Qualification:</b>  {{loadedActorDetails?.qualification}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <b>Address:</b>  {{loadedActorDetails?.address}}
+            </ion-col>
+          </ion-row>
+    </ion-grid>
+  </ion-card>
+
+  <ion-grid >
+    <ion-row text-center>
+      <ion-col>
+        <ion-button (click)='submit()'>Take Appointment</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

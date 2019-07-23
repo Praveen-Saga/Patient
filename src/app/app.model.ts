@@ -15,6 +15,8 @@ export interface Signup{
     phone:number;
     password:string;
     confirmpassword:string;
+    token?:string;
+    status?:string;
 }
 
 export interface ResetPwd{
@@ -40,7 +42,7 @@ export interface RegProviders{
     qualification: string;
     speciality: string;
     experience: number;
-    language: string;
+    language: string[];
     slots: Availability[];
     address: string;
     latitude: number;
@@ -56,3 +58,28 @@ export interface RegProviders{
     availableDays: string;
     availableTimes: string[];
   }
+
+
+  export interface Search{
+      name:string;
+      gender:string;
+      speciality:string;
+      availableDays:string;
+  }
+
+export class User{
+    constructor(
+        public _id:string,
+        public email:string,
+        // private _token?:string,
+        // private tokenExpirationDate?: Date
+         ){}
+
+    // get token(){
+    //     // if(!this.tokenExpirationDate || this.tokenExpirationDate <= new Date()){
+    //     //     return null;
+    //     // }
+    //     //  currently commented because token expiration is not avaliable
+    //     return this._token;
+    // }
+}

@@ -6,6 +6,8 @@ import { RouterModule } from '@angular/router';
 
 import { HomePage } from './home.page';
 import { SearchComponent } from './search/search.component';
+import { ViewComponent } from './view/view.component';
+import { ConfirmAppointmentComponent } from './confirm-appointment/confirm-appointment.component';
 
 const routes=[
   {
@@ -14,6 +16,10 @@ const routes=[
       {
         path:"",
         component: HomePage,
+      },
+      {
+        path:"confirm-appointment",
+        component: ConfirmAppointmentComponent,
       },
       {
         path:':service-provider',
@@ -32,7 +38,10 @@ const routes=[
   ],
   declarations: [
     HomePage,
-    SearchComponent
-  ]
+    SearchComponent,
+    ViewComponent,
+    ConfirmAppointmentComponent
+  ],
+  entryComponents:[ViewComponent]
 })
 export class HomePageModule {}

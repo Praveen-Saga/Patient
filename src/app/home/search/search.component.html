@@ -4,63 +4,98 @@
             <ion-back-button defaultHref="home"></ion-back-button>
           </ion-buttons>
           <ion-title>
-           Search
+           Search {{title}}
           </ion-title>
     </ion-toolbar>
   </ion-header>
 
 <ion-content>
  <!-- Data to display after skeleton screen -->
-<div *ngIf="data">
-    <div class="ion-padding">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ac eros est. Cras iaculis pulvinar arcu non vehicula. Fusce at quam a eros malesuada condimentum. Aliquam tincidunt tincidunt vehicula.
-    </div>
+<div *ngIf="registeredProvider.length>0">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+        <ion-button expand='block' fill='outline' (click)='onSearch()' color='secondary'>
+            Click to Search Best Doctor For You
+          </ion-button>
+          <ion-card *ngIf='searchOpen'>
+              <form (ngSubmit)='searchDoctor(searchForm)' #searchForm='ngForm'>
+                  <ion-grid >
+                    <ion-row > 
+                      <ion-col>
+                          <ion-item>
+                              <ion-label position="floating">Name</ion-label>
+                              <ion-input type='text' name='name' [(ngModel)]='search.name'></ion-input>
+                            </ion-item>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row no-padding> 
+                        <ion-col>
+                            <ion-item>
+                                <ion-label position="floating">Gender</ion-label>
+                                <ion-select name="gender" [(ngModel)]='search.gender'>
+                                  <ion-select-option value="Female">Female</ion-select-option>
+                                  <ion-select-option value="Male">Male</ion-select-option>
+                                </ion-select>
+                              </ion-item>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row no-padding *ngIf="title=='Doctor'"> 
+                          <ion-col>
+                              <ion-item>
+                                  <ion-label position="floating">speciality</ion-label>
+                                  <ion-input type='text' name='name' [(ngModel)]='search.speciality'></ion-input>
+                                </ion-item>
+                          </ion-col>
+                        </ion-row>
+                        <ion-row no-padding> 
+                            <ion-col>
+                                <ion-item>
+                                    <ion-label position="floating">Available Days</ion-label>
+                                    <ion-select type='text' name='name' [(ngModel)]='search.availableDays'>
+                                        <ion-select-option value="Sunday">Sunday</ion-select-option>
+                                        <ion-select-option value="Monday">Monday</ion-select-option>
+                                        <ion-select-option value="Tuesday">Tuesday</ion-select-option>
+                                        <ion-select-option value="Wednesday">Wednesday</ion-select-option>
+                                        <ion-select-option value="Thursday">Thursday</ion-select-option>
+                                        <ion-select-option value="Friday">Friday</ion-select-option>
+                                        <ion-select-option value="Saturday">Saturday</ion-select-option>
+                                        <ion-select-option value="Monday to Saturday">Monday to Saturday</ion-select-option>
+                                        <ion-select-option value="Everyday">Everyday</ion-select-option>                                      
+                                    </ion-select>
+                                  </ion-item>
+                            </ion-col>
+                          </ion-row>
+                          <!-- <ion-row>
+                            <ion-col offset='4'>
+                              <ion-button>Search</ion-button>
+                            </ion-col>
+                          </ion-row> -->
+                  </ion-grid>
+              </form>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   
     <ion-list>
-      <ion-list-header>Data</ion-list-header>
-      <ion-item>
-        <ion-avatar slot="start">
-          <img src="./avatar.svg">
-        </ion-avatar>
-        <ion-label>
-          <h3>
-            {{ data.heading }}
-          </h3>
-          <p>
-            {{ data.para1 }}
-          </p>
-          <p>
-            {{ data.para2 }}
-          </p>
-        </ion-label>
-      </ion-item>
-      <ion-item>
+      <ion-list-header><h6>List of {{title}}s Available</h6></ion-list-header>
+      <ion-item *ngFor='let provider of registeredProvider' (click)='viewDetails(provider)' lines='none'>
         <ion-thumbnail slot="start">
-          <img src="./thumbnail.svg">
+          <img [src]="provider.photo">
         </ion-thumbnail>
         <ion-label>
-          <h3>
-            {{ data.heading }}
-          </h3>
-          <p>
-            {{ data.para1 }}
+          <h2 text-capitalize>
+            {{ provider.name }}
+          </h2>
+          <p *ngIf='provider.qualification!==""'>
+            {{ provider.qualification }} 
           </p>
-          <p>
-            {{ data.para2 }}
+          <p *ngIf='provider.speciality!==""' text-capitalize>
+            {{ provider.speciality }} 
           </p>
-        </ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="call" slot="start"></ion-icon>
-        <ion-label>
-          <h3>
-            {{ data.heading }}
-          </h3>
-          <p>
-            {{ data.para1 }}
-          </p>
-          <p>
-            {{ data.para2 }}
+          <p *ngIf='provider.experience>0'>
+            Experience: {{ provider.experience }} years
           </p>
         </ion-label>
       </ion-item>
@@ -68,57 +103,20 @@
   </div>
   
   <!-- Skeleton screen -->
-  <div *ngIf="!data">
+  <div *ngIf="!registeredProvider.length>0">
     <div class="ion-padding custom-skeleton">
-      <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
-      <ion-skeleton-text animated></ion-skeleton-text>
-      <ion-skeleton-text animated style="width: 88%"></ion-skeleton-text>
-      <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
-      <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+      <ion-skeleton-text animated style="height: 30%"></ion-skeleton-text>
     </div>
   
     <ion-list>
-      <ion-list-header>
-        <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
-      </ion-list-header>
-      <ion-item>
-        <ion-avatar slot="start">
-          <ion-skeleton-text animated></ion-skeleton-text>
-        </ion-avatar>
-        <ion-label>
-          <h3>
-            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-          </h3>
-          <p>
-            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
-          </p>
-          <p>
-            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
-          </p>
-        </ion-label>
-      </ion-item>
-      <ion-item>
+      <ion-item *ngFor='let length of skeltonLength'>
         <ion-thumbnail slot="start">
           <ion-skeleton-text animated></ion-skeleton-text>
         </ion-thumbnail>
         <ion-label>
-          <h3>
+          <h2>
             <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-          </h3>
-          <p>
-            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
-          </p>
-          <p>
-            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
-          </p>
-        </ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-skeleton-text animated style="width: 27px; height: 27px" slot="start"></ion-skeleton-text>
-        <ion-label>
-          <h3>
-            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-          </h3>
+          </h2>
           <p>
             <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
           </p>

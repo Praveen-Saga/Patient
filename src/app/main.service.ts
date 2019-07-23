@@ -1,10 +1,12 @@
 import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../environments/environment';
-import { LoadingController, AlertController } from '@ionic/angular';
+import { LoadingController, AlertController, Events } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { HealthProvider, RegProviders } from './app.model';
+import { Subject, EMPTY, BehaviorSubject, from, of } from 'rxjs';
+import { HealthProvider, RegProviders, User, Signup } from './app.model';
+import { catchError, shareReplay, retry, map, tap, take, switchMap } from 'rxjs/operators';
+import { Plugins } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root'
@@ -12,16 +14,75 @@ import { HealthProvider, RegProviders } from './app.model';
 export class MainService implements OnInit{
 
   private SubscribeSuccess=new Subject<boolean>();
+  private _user=new BehaviorSubject<User>(null);
+  pickappointment=new BehaviorSubject<RegProviders>(null)
+  
 
   constructor(
     private http: HttpClient,
     private router:Router,
+
+
     private loadingCtrl:LoadingController,
     private alertCtrl:AlertController,
+    public events:Events,
   ) { 
 
   }
+  
+  get userIsAuthorized(){
+    return this._user.asObservable()
+    .pipe(take(1),
+      map(user=>{
+        if(user){
+        return !!user._id        
+        }else {
+          return false;
+        }
+      }
+      )
+      )
+    .pipe(
+      take(1),
+      switchMap(isAuth=>{
+        if(!isAuth){
+          return this.autoLogin();
+        }else{
+          return of(isAuth);
+        }
+      }),
+      tap(isAuth=>{
+        if(!isAuth){
+          // this.router.navigateByUrl('/login')
+          return false;
+        }
 
+      })
+    )
+  }
+  get userId(){
+    return this._user.asObservable().pipe(map(user=>{
+      if(user){
+      return user._id;        
+      }
+      else {
+        return null;
+      }
+    })
+    )
+  }
+
+  // get token(){
+  //   return this._user.asObservable().pipe(map(user=>{
+  //     if(user){
+  //     return user.token;        
+  //     }else {
+  //       return null;
+  //     }
+  //   })
+  //   )
+  // }
+  
   ngOnInit(){
     this.SubscribeSuccess.next(false);
   }
@@ -29,6 +90,13 @@ export class MainService implements OnInit{
   getSubscribeSuccess(){
     return this.SubscribeSuccess.asObservable();
   }
+
+  // getting selected doctor details
+  get Provider(){
+    return this.pickappointment.asObservable();
+  }
+  // getting selected doctor details
+
 
 // Alert Handler
 alertHandler(header,message){
@@ -47,9 +115,12 @@ alertHandler(header,message){
 
 errHandler(err){
   console.log(err);
-  if(err.message.includes('Http failure response ')){
-      this.alertHandler('Error',err.statusText+"\n Problem With Connectivity Please Try Again Later..")
+  if(err.message.includes('Bad Request')){
+      this.alertHandler('Error',"Please Enter Vaild Details")
   }
+  else if(err.statusText.includes('Unknown Error') ){
+    this.alertHandler('Error',"Problem with connectivity please try again later..")
+}
  else{
       this.alertHandler('Error','Unexpected Error Occur..')
 }
@@ -62,6 +133,25 @@ errHandler(err){
   }
 // Getting Providers to display available services
 
+// Getting Registered Providers in Search Page
+getProviderList(id){
+  return this.http.get<RegProviders[]>(environment.url+'getActorActive/'+id)
+  .pipe(
+    retry(5),catchError((err)=>{
+      console.log(err)
+      return EMPTY;
+    }),
+    shareReplay()
+    )
+}
+// Getting Registered Providers in Search Page
+
+// LoggedIn User Details
+userDetails(id){
+  return this.http.get<Signup>(environment.url+'getpatient/'+id);
+}
+
+// LoggedIn User Details
 
 // Signing Up New User
   signUpUser(post){
@@ -87,6 +177,15 @@ errHandler(err){
   }
 // Signing Up New User
 
+// Storing Data using Plugin
+
+private storeLoginData(userId:string,email:string){
+  const data = JSON.stringify({ userId:userId, email:email});
+  Plugins.Storage.set({key:'loginData',value: data});
+}
+
+// Storing Data using Plugin
+
 // Logging In New User
 
 loginUser(post){
@@ -95,13 +194,17 @@ loginUser(post){
   }).then(
     loader=>{
       loader.present();
-      return this.http.post(environment.url+'patientlogin',post)
+      return this.http.post<RegProviders>(environment.url+'patientlogin',post)
       .subscribe(res=>{
         loader.dismiss();
         console.log(res);
-        this.alertHandler('Success',"Login Successful")
+        // this.alertHandler('Success',"Login Successful")
+        this._user.next(new User(res._id,res.email));
+        this.storeLoginData(res._id,res.email)
         this.router.navigateByUrl('/home');
         this.SubscribeSuccess.next(true)
+    this.events.publish('Auth:Changed',true);
+
       },
       err=>{
         loader.dismiss();
@@ -109,13 +212,92 @@ loginUser(post){
       })
     })
     this.SubscribeSuccess.next(false);
+
 }
 // Logging In New User
 
-// Getting Registered Providers in Search Page
-getProviderList(id){
-  return this.http.get<RegProviders[]>(environment.url+'getActor/'+id)
+// AutoLogin for stored user details
+autoLogin(){
+return from (Plugins.Storage.get({key: 'loginData'})).pipe(
+  map(storedData=>{
+    if(!storedData || !storedData.value){
+      return null;
+    }
+    const parsedData=JSON.parse(storedData.value) as {userId:string,email:string};
+    // const expirationTime= new Date(parsedData.tokenExpirationDate);
+    // if(expirationTime<= new Date()){
+    //   return null;
+    // }
+    const user= new User(parsedData.userId,parsedData.email);
+    return user;
+}),
+tap(user=>{
+  if(user){
+    this._user.next(user);
+    this.SubscribeSuccess.next(true)
+    this.SubscribeSuccess.next(false);
+    
+      /*Events are used because subscribing not updating the side menu due to ionic catching */
+    this.events.publish('Auth:Changed',true);
+      /*Events are used because subscribing not updating the side menu due to ionic catching */
+  }
+}),
+map(user=>{
+ 
+
+  return !!user //returns true when their is user otherwise false;
+})
+);
 }
-// Getting Registered Providers in Search Page
+
+// LogOut
+    logout(){
+      this._user.next(null);
+      Plugins.Storage.remove({key:'loginData'});
+      this.userIsAuthorized;
+      this.router.navigateByUrl('/home');
+      this.events.publish('Auth:Changed',false);
+
+    }
+// LogOut
+
+// change Password
+changePwd(id,post){
+  console.log(id,post);
+  this.http.put<Signup>(environment.url+'updatepatientpassword/'+id, post).subscribe(res=>{
+    console.log(res);
+    if(res.status){
+      if(res.status=="Password  mismatch"){
+        this.alertHandler('Error','Please Enter a Valid Password..')
+      }
+    }else{
+      this.SubscribeSuccess.next(true);
+   }
+  },
+  err=>{
+    console.log(err);
+    this.SubscribeSuccess.next(true)
+
+  })
+  this.SubscribeSuccess.next(false)
+}
+
+// change Password
+
+
+// Sharing App
+shareApp(){
+const { Share } = Plugins;
+  Share.share({
+    title: 'Share this app',
+    text: 'Really awesome thing you need to see right meow',
+    url: 'https://play.google.com/store/apps/details?id=com.facebook.katana&hl=en_IN',
+    dialogTitle: 'Share with buddies'
+  });
+}
+// Sharing App
+
+
+
 
 }

@@ -1,0 +1,89 @@
+<!-- <ion-header>
+    <ion-toolbar color='none'>
+        <ion-title text-center>{{loadedProviderData.name}}</ion-title>
+            <ion-buttons slot='primary'>
+            <ion-button (click)='cancel()'><ion-icon name='close'></ion-icon></ion-button>
+        </ion-buttons>
+     </ion-toolbar>
+   </ion-header> -->
+    
+<ion-content>
+    <ion-grid no-padding>
+        <ion-row no-padding>
+            <ion-col no-padding>
+                <ion-img [src]='loadedProviderData.photo'></ion-img>
+            </ion-col>
+        </ion-row>
+        <ion-row no-padding text-center>
+            <ion-col >
+                <ion-label text-uppercase><b>{{loadedProviderData.name}}   </b>
+                              <!-- {{loadedProviderData.qualification}} -->
+                </ion-label>
+            </ion-col>
+        </ion-row>
+        <ion-row no-padding *ngIf='loadedProviderData.qualification!==""'>  
+            <ion-col >
+                <ion-label ><b>Qualification:</b> {{loadedProviderData.qualification}}</ion-label>
+            </ion-col>
+           </ion-row>
+        <ion-row no-padding *ngIf='loadedProviderData.speciality!==""'>
+            <ion-col >
+                    <ion-label text-center text-lowercase text-capitalize><b>Speciality:</b> {{loadedProviderData.speciality?.toLowerCase()}}</ion-label>
+            </ion-col>
+         </ion-row>
+        
+         <ion-row no-padding *ngIf='loadedProviderData.experience!==null || loadedProviderData.experience!==0'>
+                <ion-col >
+                        <ion-label text-center  text-capitalize><b>Experience:</b> {{loadedProviderData.experience}}</ion-label>
+                </ion-col>
+         </ion-row>
+         <ion-row no-padding *ngIf='loadedProviderData.slots.length>0'>
+                <ion-col >
+                        <ion-label text-center text-capitalize><b>Availability:</b> 
+                        </ion-label>
+                    </ion-col>
+         </ion-row>
+         <ion-row no-padding *ngIf='loadedProviderData.slots.length>0' text-center>
+                <ion-col >
+                            <ion-label *ngFor='let days of loadedProviderData.slots'>
+                               <b> {{days.availableDays}}</b> <br/>
+                                <ion-label *ngFor='let time of days.availableTimes'>{{time}} <br/></ion-label>
+                            </ion-label>
+                </ion-col>
+         </ion-row>
+         <ion-row>
+             <ion-col>
+                    <ion-label text-center text-capitalize><b>Gender:</b> {{loadedProviderData.gender}}</ion-label>
+             </ion-col>
+         </ion-row>
+         <ion-row no-padding *ngIf='loadedProviderData.language.length>0'>
+                <ion-col >
+                        <ion-label text-center text-capitalize><b>Languages:</b> 
+                        </ion-label>
+                    </ion-col>
+         </ion-row>
+         <ion-row no-padding *ngIf='loadedProviderData.language.length>0'>
+                <ion-col size='4' *ngFor='let speak of loadedProviderData.language'>
+                            <ion-label >{{speak}}</ion-label>
+                </ion-col>
+         </ion-row>
+         <ion-row no-padding>
+                <ion-col >
+                        <ion-label text-center text-capitalize><b>Address:</b> 
+                        </ion-label>
+                    </ion-col>
+         </ion-row>
+         <ion-row no-padding>
+                <ion-col >
+                        <ion-label text-center text-capitalize>{{loadedProviderData.address}}
+                        </ion-label>
+                    </ion-col>
+         </ion-row>
+         <ion-row text-center >
+             <ion-col> <ion-button (click)="cancel()" fill='outline' color='danger'>Close</ion-button></ion-col>
+            <ion-col><ion-button (click)="bookAppointment()" color='tertiary'>Select</ion-button></ion-col>
+         </ion-row>
+    </ion-grid>
+        
+   
+</ion-content>

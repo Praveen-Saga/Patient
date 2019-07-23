@@ -9,32 +9,32 @@
       </ion-header>
        <ion-content >
           <ion-list text-center>
-            <ion-menu-toggle>
+            <ion-menu-toggle *ngIf='!isAuth'>
                 <!-- <ion-item> -->
                   <!-- <ion-icon name='cart' slot='start'></ion-icon>  -->
                   <ion-button color='tertiary' expand='block' routerLink="/login/sign-up" fill='outline'>Sign up</ion-button>
                 <!-- </ion-item> -->
             </ion-menu-toggle>
-            <ion-menu-toggle>
+            <ion-menu-toggle *ngIf='!isAuth'>
                 <!-- <ion-item lines='none'> -->
                   <!-- <ion-icon name='cart' slot='start'></ion-icon>  -->
                   <ion-button color='primary' routerLink="/login" expand='block'>Login</ion-button>
                 <!-- </ion-item> -->
             </ion-menu-toggle>
-            <ion-menu-toggle>
+            <ion-menu-toggle >
                 <ion-item lines='none' routerLink="/profile">
                   <ion-icon name='contact' slot='start'></ion-icon> 
                   <ion-label>Profile</ion-label>
                 </ion-item>
             </ion-menu-toggle>
             <ion-menu-toggle>
-                <ion-item lines='none'>
+                <ion-item lines='none' (click)='shareApp()'>
                   <ion-icon name="share-alt" slot="start"></ion-icon>
                   <ion-label>Share App</ion-label>
                 </ion-item>
             </ion-menu-toggle>
-            <ion-menu-toggle>
-                <ion-item button lines='none'>
+            <ion-menu-toggle *ngIf='isAuth'>
+                <ion-item button lines='none' (click)='logout()'>
                     <ion-icon name='exit' slot='start'></ion-icon>
                     <ion-label>Logout</ion-label>
                   </ion-item>

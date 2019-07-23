@@ -11,21 +11,48 @@
 
 <ion-content>
   <ion-grid>
-    <ion-row >
-      <ion-col size='6' *ngFor='let provider of serviceProviders' text-center>
+    <ion-row padding-horizontal>
+          <!-- My Card Model -->
+      <!-- <ion-col size='6' *ngFor='let provider of serviceProviders' text-center>
         <ion-buttons [routerLink]='[provider._id]'>
             <ion-card  style="height: 19vh;background-color: white;border:1px solid rgb(150, 207, 226);" >
                 <ion-card-content style="height: 80%;" no-padding>
-                <!-- <ion-item lines='none'> -->
+                <ion-item lines='none'>
                     <ion-img [src]='provider.icon' style="height:100%;width: 100%;"></ion-img>
-                  <!-- </ion-item> -->
+                  </ion-item>
                 </ion-card-content>
                 <ion-card-header style="height: 20%;" no-padding>
                     <ion-card-title style="padding-top: 2px;padding-bottom: 2px;">{{provider.providerName}}</ion-card-title>
                 </ion-card-header>
               </ion-card>
+            </ion-buttons>
+          </ion-col> -->
+          <!-- My Card Model -->
+
+          <!-- Icon Model -->
+    <ion-col size='3' *ngFor='let provider of serviceProviders' text-center padding-vertical>
+        <ion-buttons [routerLink]='[provider._id]'>
+          <ion-avatar style="border:2px solid lightblue;">
+              <ion-img [src]='provider.icon' style="height:100%;width: 100%;"></ion-img>
+              <ion-label style="font-size: 0.8em">{{provider.providerName}}</ion-label>
+          </ion-avatar>
+
         </ion-buttons>
-      </ion-col>
+    </ion-col>
+          <!-- Icon Model -->
+
+          <!-- Thumbnail Model -->
+          <!-- <ion-col size='4' *ngFor='let provider of serviceProviders' text-center padding-vertical>
+              <ion-buttons [routerLink]='[provider._id]'>
+                <ion-thumbnail style="border:2px solid lightblue;">
+                    <ion-img [src]='provider.icon' style="height:100%;width: 100%;" ></ion-img>
+                    <ion-label style="font-size: 0.7rem">{{provider.providerName}}</ion-label>
+                </ion-thumbnail>
+      
+              </ion-buttons>
+          </ion-col> -->
+          <!-- Thumbnail Model -->
+       
     </ion-row>
   </ion-grid>
 </ion-content>

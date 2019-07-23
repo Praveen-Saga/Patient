@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MainService } from '../main.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,8 @@ export class LoginPage implements OnInit {
     password:''
   }
   constructor(
-    private mainServ:MainService
+    private mainServ:MainService,
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -24,9 +26,15 @@ export class LoginPage implements OnInit {
     console.log(this.login);
     this.mainServ.loginUser(this.login);
     this.mainServ.getSubscribeSuccess().subscribe(res=>{
-      console.log(res);
+      // console.log(res);
       if(res){
         form.resetForm();
+        console.log(this.mainServ.pickappointment.value)
+        if(this.mainServ.pickappointment.value==null){
+             this.router.navigateByUrl('/home');
+        }else{
+          this.router.navigateByUrl('/home/confirm-appointment');
+        }
       }
     })
   }

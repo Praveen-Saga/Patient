@@ -32,7 +32,7 @@ export class SignupComponent implements OnInit {
     console.log(this.signup);
     this.mainServ.signUpUser(this.signup)
     this.mainServ.getSubscribeSuccess().subscribe(res=>{
-      console.log(res);
+      // console.log(res);
       if(res){
         form.resetForm();
       }
