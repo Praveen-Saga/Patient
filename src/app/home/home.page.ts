@@ -12,6 +12,7 @@ import { LoadingController } from '@ionic/angular';
 })
 export class HomePage implements OnInit {
   serviceProviders:HealthProvider[]=[];
+  isLoading:boolean=false;
 
     // Dummy for view when no service
 
@@ -71,23 +72,29 @@ export class HomePage implements OnInit {
     // console.log(this.serviceProviders);
 
     // Dummy for view when no service
+    this.getServiceProviders();
+
+  }
+
+  getServiceProviders(){
     this.loadingCtrl.create({
       message:'Loading Please Wait...'
     }).then(loader=>{
       loader.present();
+      this.isLoading=true;
       this.mainServ.getProviders()
-      .pipe(
-      // retry(5),
-        retryWhen((err) => {  
-        return interval(1000).pipe(
-        flatMap(count => count == 3 ? throwError(
-          this.mainServ.errHandler({
-            message:'Connectivity Problem'
-          })) : of(count))
-        )
-      })
-      // retryWhen(errors => errors.pipe(delay(1000), take(10),concatMap(throwError(this.mainServ.errHandler(err))) ))
-      )
+      // .pipe(
+      // // retry(5),
+      //   retryWhen((err) => {  
+      //   return interval(1000).pipe(
+      //   flatMap(count => count == 3 ? throwError(
+      //     this.mainServ.errHandler({
+      //       message:'Connectivity Problem'
+      //     })) : of(count))
+      //   )
+      // })
+      // // retryWhen(errors => errors.pipe(delay(1000), take(10),concatMap(throwError(this.mainServ.errHandler(err))) ))
+      // )
       .subscribe(res=>{
         loader.dismiss();
         console.log(res);
@@ -100,13 +107,25 @@ export class HomePage implements OnInit {
           .join(' ')
         }
         console.log(this.serviceProviders)
+        this.isLoading=false;
       },
       err=>{
         loader.dismiss();
        this.mainServ.errHandler(err);
+       this.isLoading=false;
       
       })
     })
+  }
 
+  doRefresh(event) {
+    // console.log('Begin async operation');
+    this.getServiceProviders();
+    // setTimeout(() => {
+    //   console.log('Async operation has ended');
+    if(this.isLoading=true){
+      event.target.complete();
+    }
+    // }, 1000);
   }
 }

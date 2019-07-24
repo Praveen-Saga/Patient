@@ -4,7 +4,7 @@ import { environment } from '../environments/environment';
 import { LoadingController, AlertController, Events } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Subject, EMPTY, BehaviorSubject, from, of } from 'rxjs';
-import { HealthProvider, RegProviders, User, Signup } from './app.model';
+import { HealthProvider, RegProviders, User, Signup, Appointment } from './app.model';
 import { catchError, shareReplay, retry, map, tap, take, switchMap } from 'rxjs/operators';
 import { Plugins } from '@capacitor/core';
 
@@ -16,6 +16,7 @@ export class MainService implements OnInit{
   private SubscribeSuccess=new Subject<boolean>();
   private _user=new BehaviorSubject<User>(null);
   pickappointment=new BehaviorSubject<RegProviders>(null)
+  appointment=new BehaviorSubject<Appointment>(null)
   
 
   constructor(
@@ -282,8 +283,24 @@ changePwd(id,post){
   this.SubscribeSuccess.next(false)
 }
 
+
+forgotPwd(email:string){
+  return this.http.get(environment.url+'forgotpassword/'+email)
+}
 // change Password
 
+// search among doctors nurses etc
+
+searchFor(id,post){
+  console.log(id,post);
+  return this.http.post(environment.url+'searchActor/'+id, post).subscribe(res=>{
+    console.log(res);
+  },
+  err=>{
+    this.errHandler(err);
+  })
+}
+// search among doctors nurses etc
 
 // Sharing App
 shareApp(){

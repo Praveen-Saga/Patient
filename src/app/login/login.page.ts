@@ -29,8 +29,8 @@ export class LoginPage implements OnInit {
       // console.log(res);
       if(res){
         form.resetForm();
-        console.log(this.mainServ.pickappointment.value)
-        if(this.mainServ.pickappointment.value==null){
+        console.log(this.mainServ.pickappointment.value,this.mainServ.appointment.value)
+        if(this.mainServ.pickappointment.value==null && this.mainServ.appointment.value==null){
              this.router.navigateByUrl('/home');
         }else{
           this.router.navigateByUrl('/home/confirm-appointment');

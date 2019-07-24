@@ -20,11 +20,13 @@ export class SearchComponent implements OnInit {
   allProviders:HealthProvider[];
   myProvider:HealthProvider;
   searchOpen:boolean=false;
-  authSub:Subscription
+  authSub:Subscription;
+  isLoading:boolean=false;
+  availableDays:string='';
   search:Search={
     name:'',
     gender:'',
-    availableDays:'',
+    slot:[],
     speciality:''
   }
 
@@ -75,7 +77,7 @@ export class SearchComponent implements OnInit {
     })
     // getting id from url
 
-    // Getting Provider Group doctor , nurrse etc
+    // Getting Provider Group doctor , nurse etc
     this.mainServ.getProviders().subscribe(res=>{
       console.log(res);
       this.allProviders=res;
@@ -98,6 +100,7 @@ export class SearchComponent implements OnInit {
 
   //  Get LIst of the Providers of the loadedProviderId Group
   getProvidersList(id){
+    this.isLoading=true;
     this.mainServ.getProviderList(id).subscribe(res=>{
       console.log(res);
       this.registeredProvider=[...res];
@@ -105,9 +108,11 @@ export class SearchComponent implements OnInit {
         el.photo=environment.url.concat(el.photo)
         console.log(el.photo)
       })
-      console.log(this.registeredProvider)
+      console.log(this.registeredProvider);
+      this.isLoading=false;
     },
     err=>{
+      this.isLoading=false;
       this.mainServ.errHandler(err)
       // this.registeredProvider=[...this.myProviders]
     })
@@ -117,6 +122,18 @@ export class SearchComponent implements OnInit {
   // Search filters Open and Close
   onSearch(){
     this.searchOpen=!this.searchOpen;
+  }
+
+  submit(){
+    this.search.slot.length=0;
+    this.search.slot.push({
+      availableDays:this.availableDays,
+      availableTimes:[],
+    });
+    console.log(this.search)
+    this.mainServ.searchFor(this.loadedProviderId,this.search)
+
+    
   }
   // Search filters Open and Close
 
@@ -138,17 +155,25 @@ export class SearchComponent implements OnInit {
         console.log(loadedProviderDetails)
         this.mainServ.pickappointment.next(loadedProviderDetails);
         console.log(this.mainServ.pickappointment.value)
-        this.authSub=this.mainServ.userIsAuthorized.subscribe(res=>{
-          if(res){
-              this.router.navigateByUrl('/home/confirm-appointment')
-          }else{
-               this.router.navigateByUrl('/login');
-          }
-        })
+        // this.authSub=this.mainServ.userIsAuthorized.subscribe(res=>{
+        //   if(res){
+        //       this.router.navigateByUrl('/home/confirm-appointment')
+        //   }else{
+        //        this.router.navigateByUrl('/login');
+        //   }
+        // })
+        this.router.navigateByUrl('/home/confirm-appointment')
           
       }
     })
   }
   // view details in a model
 
+  doRefresh(event) {
+    this.getProvidersList(this.loadedProviderId);
+    if(this.isLoading=true){
+      event.target.complete();
+    }
+
+  }
 }

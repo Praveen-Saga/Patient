@@ -4,3 +4,25 @@
 // styles are for the entire app and not just one component. Additionally, this 
 // file can hold Sass mixins, functions, and placeholder classes to be imported 
 // and used throughout the application.
+
+ion-footer ion-toolbar{
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 150%;
+}
+.scroll{
+    white-space: nowrap;
+    transform: translateX(100%);
+    animation: scroll 10s linear infinite;
+
+}
+
+@keyframes scroll{
+    0%{
+        transform: translateX(100%);
+    }
+    100%{
+        transform: translateX(-100%);
+    }
+}

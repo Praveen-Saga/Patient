@@ -55,7 +55,17 @@ export class ResetPasswordComponent implements OnInit {
   onResetPwd(form:NgForm){
     console.log(this.resetPwd)
     if(this.existingRoute=='forgot-password'){
-      console.log('New Password Set Successfully');
+      this.mainServ.forgotPwd(this.resetPwd.email).subscribe(res=>{
+        console.log(res);
+        form.resetForm();
+        this.mainServ.alertHandler("Success","Password has been sent to your email");
+       this.router.navigateByUrl('/login');
+      },
+      err=>{
+        this.mainServ.errHandler(err)
+      })
+
+      // console.log('New Password Set Successfully');
     }
     if(this.existingRoute=='change-password'){
       if(this.loadedUser && this.loadedUser!==''){
@@ -65,11 +75,11 @@ export class ResetPasswordComponent implements OnInit {
         })
         this.mainServ.getSubscribeSuccess().subscribe(res=>{
           console.log(res);
-          if(res){
+          if(res && this.existingRoute){
             form.resetForm();
             this.mainServ.alertHandler('Success','Password Changed Successfully')
             // this.mainServ.logout();
-            // this.router.navigateByUrl('/profile');
+            this.router.navigateByUrl('/profile');
           }
         })
       }

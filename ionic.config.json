@@ -1,5 +1,7 @@
 {
   "name": "hcpatient",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }

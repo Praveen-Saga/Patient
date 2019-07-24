@@ -10,6 +10,9 @@
 </ion-header>
 
 <ion-content>
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+      </ion-refresher>
   <ion-grid>
     <ion-row padding-horizontal>
           <!-- My Card Model -->
@@ -56,3 +59,4 @@
     </ion-row>
   </ion-grid>
 </ion-content>
+

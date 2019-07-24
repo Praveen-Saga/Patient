@@ -64,7 +64,8 @@ export interface RegProviders{
       name:string;
       gender:string;
       speciality:string;
-      availableDays:string;
+    //   availableDays:string;
+    slot?:Availability[];
   }
 
 export class User{
@@ -82,4 +83,16 @@ export class User{
     //     //  currently commented because token expiration is not avaliable
     //     return this._token;
     // }
+}
+
+export class Appointment{
+    constructor(
+        // public userId:string,
+        // public providerId:string,
+        // public pickedSlot:{
+        public    day:string,
+        public   time:string,
+        
+        // }
+    ){}
 }

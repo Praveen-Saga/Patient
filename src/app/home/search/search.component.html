@@ -10,15 +10,24 @@
   </ion-header>
 
 <ion-content>
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+      </ion-refresher>
  <!-- Data to display after skeleton screen -->
 <div *ngIf="registeredProvider.length>0">
     <ion-grid>
-      <ion-row>
-        <ion-col>
-        <ion-button expand='block' fill='outline' (click)='onSearch()' color='secondary'>
-            Click to Search Best Doctor For You
+      <ion-row text-center>
+        <ion-col >
+          <ion-title>Search Best Doctor For You </ion-title>
+        <ion-button (click)='onSearch()' color='secondary'>
+          <!-- expand='block' fill='outline' to Search Best Doctor For You -->
+            Click 
           </ion-button>
-          <ion-card *ngIf='searchOpen'>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf='searchOpen'>
+        <ion-col>
+          <ion-card >
               <form (ngSubmit)='searchDoctor(searchForm)' #searchForm='ngForm'>
                   <ion-grid >
                     <ion-row > 
@@ -52,7 +61,7 @@
                             <ion-col>
                                 <ion-item>
                                     <ion-label position="floating">Available Days</ion-label>
-                                    <ion-select type='text' name='name' [(ngModel)]='search.availableDays'>
+                                    <ion-select type='text' name='name' [(ngModel)]='availableDays'>
                                         <ion-select-option value="Sunday">Sunday</ion-select-option>
                                         <ion-select-option value="Monday">Monday</ion-select-option>
                                         <ion-select-option value="Tuesday">Tuesday</ion-select-option>
@@ -66,11 +75,11 @@
                                   </ion-item>
                             </ion-col>
                           </ion-row>
-                          <!-- <ion-row>
+                          <ion-row>
                             <ion-col offset='4'>
-                              <ion-button>Search</ion-button>
+                              <ion-button (click)='submit()'>Submit</ion-button>
                             </ion-col>
-                          </ion-row> -->
+                          </ion-row>
                   </ion-grid>
               </form>
           </ion-card>
