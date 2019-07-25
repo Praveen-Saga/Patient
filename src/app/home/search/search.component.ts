@@ -1,22 +1,28 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainService } from '../../main.service';
 import { RegProviders, HealthProvider, Search } from '../../app.model';
 import { environment } from 'src/environments/environment';
 import { ModalController } from '@ionic/angular';
 import { ViewComponent } from '../view/view.component';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { map, startWith, take } from 'rxjs/operators';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
 })
+
+
 export class SearchComponent implements OnInit {
+// @ViewChild('searchForm')private form:NgForm;
   loadedProviderId:string;
   title:string;
   skeltonLength=Array(7)
   registeredProvider:RegProviders[]=[];
+  filteredOptions:Observable<RegProviders[]>;
   allProviders:HealthProvider[];
   myProvider:HealthProvider;
   searchOpen:boolean=false;
@@ -29,7 +35,6 @@ export class SearchComponent implements OnInit {
     slot:[],
     speciality:''
   }
-
   // list dummy data
 
   myProviders:RegProviders[]=[
@@ -66,7 +71,15 @@ export class SearchComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-   
+    // if(this.form){
+    //   this.filteredOptions = this.form.valueChanges
+    //   .pipe(
+    //     startWith(''),
+    //     map(value => this._filter(value))
+    //   );
+      
+    //   console.log(this.filteredOptions)
+    // }
   }
 
   ionViewWillEnter(){
@@ -95,7 +108,7 @@ export class SearchComponent implements OnInit {
     })
     // Getting Provider Group doctor , nurrse etc
 
-
+   
   }
 
   //  Get LIst of the Providers of the loadedProviderId Group
@@ -110,6 +123,9 @@ export class SearchComponent implements OnInit {
       })
       console.log(this.registeredProvider);
       this.isLoading=false;
+      
+      
+   
     },
     err=>{
       this.isLoading=false;
@@ -122,19 +138,52 @@ export class SearchComponent implements OnInit {
   // Search filters Open and Close
   onSearch(){
     this.searchOpen=!this.searchOpen;
+    // console.log(this.form)
   }
 
-  submit(){
+  submit(form:NgForm){
     this.search.slot.length=0;
     this.search.slot.push({
       availableDays:this.availableDays,
       availableTimes:[],
     });
     console.log(this.search)
-    this.mainServ.searchFor(this.loadedProviderId,this.search)
-
     
+    this.mainServ.searchFor(this.loadedProviderId,this.search)
+    // // if(this.form){
+    //   this.filteredOptions = this.form.valueChanges
+    //   .pipe(
+    //     // take(1),
+    //     startWith(''),
+    //     map(value => this._filter(value))
+    //   );
+    //   this.filteredOptions.subscribe(res=>console.log(res))
+    //   console.log(this.filteredOptions)
+    // // }
   }
+
+  // private _filter(value: RegProviders): RegProviders[] {
+  //   console.log('entering filter method',value)
+  //   if(value.name){
+  //     console.log('name entered')
+  //     const filterValue = value.name.toLowerCase();
+  //   // console.log(this.dataSource)
+  //   return this.registeredProvider.filter(option => option.name.toLowerCase().includes(filterValue));
+  //   }
+
+  //   if(value.gender){
+  //     const filterValue = value.gender.toString()
+  //   // console.log(this.dataSource)
+  //   return this.registeredProvider.filter(option => option.gender.toString().includes(filterValue));
+  //   }
+
+  //   if(value.speciality){
+  //     const filterValue = value.speciality.toLowerCase();
+  //   // console.log(this.dataSource)
+  //   return this.registeredProvider.filter(option => option.speciality.toLowerCase().includes(filterValue));
+  //   }
+    
+  // }
   // Search filters Open and Close
 
 

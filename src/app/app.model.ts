@@ -91,8 +91,29 @@ export class Appointment{
         // public providerId:string,
         // public pickedSlot:{
         public    day:string,
+        public    date:string,
         public   time:string,
         
         // }
     ){}
+}
+
+export interface FixAppointment{
+        _id:string,
+        patientId:string,
+        patientname:string,
+        address:string,
+        doctorname:string,
+        doctorId:string,
+        pickedslots:Appointment[],
+}
+
+export enum days{
+    Sunday,
+    Monday,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saturday
 }

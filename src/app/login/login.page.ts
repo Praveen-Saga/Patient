@@ -25,7 +25,7 @@ export class LoginPage implements OnInit {
   loginUser(form:NgForm){
     console.log(this.login);
     this.mainServ.loginUser(this.login);
-    this.mainServ.getSubscribeSuccess().subscribe(res=>{
+    this.mainServ.getLoginSubscribeSuccess().subscribe(res=>{
       // console.log(res);
       if(res){
         form.resetForm();

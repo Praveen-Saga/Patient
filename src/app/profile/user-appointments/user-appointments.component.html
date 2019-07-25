@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <ion-back-button defaultHref="home"></ion-back-button>
+        </ion-buttons>
+        <ion-title>
+         Appointment History
+        </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content refreshingSpinner="circles"></ion-refresher-content>
+    </ion-refresher>
+<!-- Data to display after skeleton screen -->
+<div *ngIf="!isLoading">
+    <div *ngIf='userAppointments.length==0'>No Appointments</div>
+  <ion-list *ngIf='userAppointments.length>0'>
+    <ion-list-header><h6>List of Available Appointments</h6></ion-list-header>
+    <ion-item *ngFor='let appointment of userAppointments' lines='none'>
+      <ion-label >
+        <h2 text-capitalize text-center>
+          {{ appointment.doctorname }}
+        </h2>
+        <p >
+          <b>Date :</b>
+           {{ appointment.pickedslots[0].date }}   {{ appointment.pickedslots[0].day }} 
+        </p>
+        <p >
+         <b>Time:</b>  
+         {{ appointment.pickedslots[0].time  }} 
+        </p>
+        <p >
+          <b>Address:</b> {{ appointment.address}} 
+        </p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</div>
+
+<!-- Skeleton screen -->
+<div *ngIf="isLoading">
+  <div class="ion-padding custom-skeleton">
+    <ion-skeleton-text animated style="height: 30%"></ion-skeleton-text>
+  </div>
+
+  <ion-list>
+    <ion-item *ngFor='let length of skeltonLength'>
+      <ion-thumbnail slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-thumbnail>
+      <ion-label>
+        <h2>
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </h2>
+        <p>
+          <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+        </p>
+        <p>
+          <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+        </p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</div>
+</ion-content>

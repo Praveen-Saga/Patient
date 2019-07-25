@@ -4,7 +4,7 @@ import { environment } from '../environments/environment';
 import { LoadingController, AlertController, Events } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Subject, EMPTY, BehaviorSubject, from, of } from 'rxjs';
-import { HealthProvider, RegProviders, User, Signup, Appointment } from './app.model';
+import { HealthProvider, RegProviders, User, Signup, Appointment, FixAppointment } from './app.model';
 import { catchError, shareReplay, retry, map, tap, take, switchMap } from 'rxjs/operators';
 import { Plugins } from '@capacitor/core';
 
@@ -14,6 +14,7 @@ import { Plugins } from '@capacitor/core';
 export class MainService implements OnInit{
 
   private SubscribeSuccess=new Subject<boolean>();
+  private LoginSubscribeSuccess=new Subject<boolean>();
   private _user=new BehaviorSubject<User>(null);
   pickappointment=new BehaviorSubject<RegProviders>(null)
   appointment=new BehaviorSubject<Appointment>(null)
@@ -90,6 +91,9 @@ export class MainService implements OnInit{
 
   getSubscribeSuccess(){
     return this.SubscribeSuccess.asObservable();
+  }
+  getLoginSubscribeSuccess(){
+    return this.LoginSubscribeSuccess.asObservable();
   }
 
   // getting selected doctor details
@@ -203,7 +207,7 @@ loginUser(post){
         this._user.next(new User(res._id,res.email));
         this.storeLoginData(res._id,res.email)
         this.router.navigateByUrl('/home');
-        this.SubscribeSuccess.next(true)
+        this.LoginSubscribeSuccess.next(true)
     this.events.publish('Auth:Changed',true);
 
       },
@@ -212,7 +216,7 @@ loginUser(post){
         this.errHandler(err);
       })
     })
-    this.SubscribeSuccess.next(false);
+    this.LoginSubscribeSuccess.next(false);
 
 }
 // Logging In New User
@@ -235,8 +239,8 @@ return from (Plugins.Storage.get({key: 'loginData'})).pipe(
 tap(user=>{
   if(user){
     this._user.next(user);
-    this.SubscribeSuccess.next(true)
-    this.SubscribeSuccess.next(false);
+    this.LoginSubscribeSuccess.next(true)
+    this.LoginSubscribeSuccess.next(false);
     
       /*Events are used because subscribing not updating the side menu due to ionic catching */
     this.events.publish('Auth:Changed',true);
@@ -301,6 +305,27 @@ searchFor(id,post){
   })
 }
 // search among doctors nurses etc
+
+// Save Appointment
+saveAppointment(post){
+  this.http.post<FixAppointment>(environment.url+'saveAppointment',post).subscribe(res=>{
+    console.log(res);
+    if(res._id && res.patientId){
+      this.SubscribeSuccess.next(true);
+    }
+  },
+  err=>{
+    this.errHandler(err);
+  })
+  this.SubscribeSuccess.next(false);
+}
+// Save Appointment
+
+// get user appointments
+getAppointments(id){
+  return this.http.get<FixAppointment[]>(environment.url+'getPatientappointment/'+id);
+}
+// get user appointments
 
 // Sharing App
 shareApp(){

@@ -75,7 +75,7 @@ export class ResetPasswordComponent implements OnInit {
         })
         this.mainServ.getSubscribeSuccess().subscribe(res=>{
           console.log(res);
-          if(res && this.existingRoute){
+          if(res && this.existingRoute=='change-password'){
             form.resetForm();
             this.mainServ.alertHandler('Success','Password Changed Successfully')
             // this.mainServ.logout();
