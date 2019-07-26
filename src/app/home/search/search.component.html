@@ -26,17 +26,19 @@
           </ion-button>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf='searchOpen'>
+      <ion-row 
+      *ngIf='searchOpen'>
       <!-- [style.visibility]="searchOpen ? 'visible' : 'hidden'"> -->
         <ion-col>
           <ion-card >
-              <form name='form' #searchForm='ngForm'  (ngSubmit)='submit(searchForm)'>
+              <form name='form' #searchForm='ngForm' 
+               (ngSubmit)='submit(searchForm)'>
                   <ion-grid >
                     <ion-row > 
                       <ion-col>
                           <ion-item>
                               <ion-label position="floating">Name</ion-label>
-                              <ion-input type='text' name='name' [(ngModel)]='search.name'>
+                              <ion-input type='text' name='name' [(ngModel)]='search.name' (keyup)='submit()'>
                               <!-- (ngModelChange)='submit()'> -->
                             </ion-input>
                             </ion-item>
@@ -44,9 +46,10 @@
                     </ion-row>
                     <ion-row no-padding> 
                         <ion-col>
-                            <ion-item>
+                            <ion-item >
                                 <ion-label position="floating">Gender</ion-label>
-                                <ion-select name="gender" [(ngModel)]='search.gender'>
+                                <ion-select name="gender" [(ngModel)]='search.gender' (ionChange)='submit()'>
+                                    <ion-select-option value="">Select</ion-select-option>
                                   <ion-select-option value="Female">Female</ion-select-option>
                                   <ion-select-option value="Male">Male</ion-select-option>
                                 </ion-select>
@@ -55,7 +58,7 @@
                       </ion-row>
                       <ion-row no-padding *ngIf="title=='Doctor'"> 
                           <ion-col>
-                              <ion-item>
+                              <ion-item (keyup)='submit()'>
                                   <ion-label position="floating">speciality</ion-label>
                                   <ion-input type='text' name='name' [(ngModel)]='search.speciality'></ion-input>
                                 </ion-item>
@@ -63,9 +66,10 @@
                         </ion-row>
                         <ion-row no-padding> 
                             <ion-col>
-                                <ion-item>
+                                <ion-item >
                                     <ion-label position="floating">Available Days</ion-label>
-                                    <ion-select type='text' name='name' [(ngModel)]='availableDays'>
+                                    <ion-select type='text' name='name' [(ngModel)]='availableDays' (ionChange)='submit()'>
+                                        <ion-select-option value="">select</ion-select-option>
                                         <ion-select-option value="Sunday">Sunday</ion-select-option>
                                         <ion-select-option value="Monday">Monday</ion-select-option>
                                         <ion-select-option value="Tuesday">Tuesday</ion-select-option>
@@ -79,11 +83,11 @@
                                   </ion-item>
                             </ion-col>
                           </ion-row>
-                          <ion-row>
+                          <!-- <ion-row>
                             <ion-col offset='4'>
                               <ion-button type='submit'>Submit</ion-button>
                             </ion-col>
-                          </ion-row>
+                          </ion-row> -->
                   </ion-grid>
               </form>
           </ion-card>
@@ -91,7 +95,7 @@
       </ion-row>
     </ion-grid>
   
-    <ion-list *ngIf='!filteredOptions?.length>0'>
+    <!-- <ion-list *ngIf='!filteredOptions?.length>0'>
       <ion-list-header><h6>List of {{title}}s Available</h6></ion-list-header>
       <ion-item *ngFor='let provider of registeredProvider' (click)='viewDetails(provider)' lines='none'>
         <ion-thumbnail slot="start">
@@ -112,11 +116,13 @@
           </p>
         </ion-label>
       </ion-item>
-    </ion-list>
+    </ion-list> -->
+    <div *ngIf='!filteredOptions?.length>0' text-center>No Matching Selections</div>
 
     <ion-list *ngIf='filteredOptions?.length>0'>
+      <!--  -->
       <ion-list-header><h6>List of {{title}}s Available</h6></ion-list-header>
-      <ion-item *ngFor='let provider of filteredOptions | async' (click)='viewDetails(provider)' lines='none'>
+      <ion-item *ngFor='let provider of filteredOptions' (click)='viewDetails(provider)' lines='none'>
         <ion-thumbnail slot="start">
           <img [src]="provider.photo">
         </ion-thumbnail>

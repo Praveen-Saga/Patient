@@ -151,11 +151,14 @@ export class ConfirmAppointmentComponent implements OnInit {
                     this.mainServ.errHandler(err);
                   })
              
-              this.mainServ.getSubscribeSuccess().subscribe(res=>{
+              this.mainServ.getSubscribeSuccess().pipe(take(2)).subscribe(res=>{
                 console.log(res);
                 if(res){
                   this.mainServ.appointment.next(null);
                   this.mainServ.pickappointment.next(null);
+                  this.slot.date='';
+                  this.slot.day='';
+                  this.slot.time='';
                   this.mainServ.alertHandler('Request Sent','Request for Appointment is sent for'+this.loadedActorDetails.name+'\nFurther Details will be informed after Confirmation.');
                   this.router.navigateByUrl('/home');
                 }
@@ -171,5 +174,7 @@ export class ConfirmAppointmentComponent implements OnInit {
  
     
   }
+
+  
  
 }

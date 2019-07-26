@@ -19,6 +19,8 @@
   <ion-list *ngIf='userAppointments.length>0'>
     <ion-list-header><h6>List of Available Appointments</h6></ion-list-header>
     <ion-item *ngFor='let appointment of userAppointments' lines='none'>
+    <ion-card padding style="width: 100%;" [ngStyle]="{'background-color':getColor(appointment.status)}">
+        <!-- --background:getColor(appointment.status) -->
       <ion-label >
         <h2 text-capitalize text-center>
           {{ appointment.doctorname }}
@@ -34,7 +36,11 @@
         <p >
           <b>Address:</b> {{ appointment.address}} 
         </p>
+        <p >
+            <b>Status:</b> {{ appointment.status}} 
+          </p>
       </ion-label>
+    </ion-card>
     </ion-item>
   </ion-list>
 </div>

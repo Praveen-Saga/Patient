@@ -9,6 +9,29 @@
           </ion-header>
            <ion-content >
               <ion-list text-center>
+                <ion-menu-toggle *ngIf='isAuth' routerLink='/profile'>
+                    <ion-card >
+                      <ion-grid>
+                        <ion-row text-center no-padding>
+                          <ion-col>
+                            <ion-label style="font-size: 2em;" text-capitalize><b>{{loadedUserDetails?.name}}</b></ion-label>
+                          </ion-col>
+                        </ion-row>
+                        <ion-row text-center no-padding>
+                            <ion-col>
+                              <ion-label class="details" style="font-size: 1.5em;">{{loadedUserDetails?.phone}}</ion-label>
+                            </ion-col>
+                          </ion-row>
+                          <!-- <ion-row text-center no-padding>
+                              <ion-col>
+                                <ion-label class="details">{{loadedUserDetails?.email}}</ion-label>
+                              </ion-col>
+                            </ion-row> -->
+                      </ion-grid>
+                    </ion-card>
+                </ion-menu-toggle>
+                  
+
                 <ion-menu-toggle *ngIf='!isAuth'>
                     <!-- <ion-item> -->
                       <!-- <ion-icon name='cart' slot='start'></ion-icon>  -->

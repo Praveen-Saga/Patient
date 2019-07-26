@@ -74,7 +74,7 @@
                       <ion-select-option *ngFor='let day of loadedActorDetails.slots' [value]='day.availableDays'>{{day.availableDays}}</ion-select-option>
                     </ion-select>
                   </ion-item>
-                  <ion-label color='danger' *ngIf='!day.valid && day.touched'>Name is required!</ion-label>
+                  <ion-label color='danger' *ngIf='!day.valid && day.touched'>Day Selection is required!</ion-label>
                 </ion-col>
                 <ion-col>
                     <ion-item>

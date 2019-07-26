@@ -17,12 +17,12 @@ import { NgForm } from '@angular/forms';
 
 
 export class SearchComponent implements OnInit {
-// @ViewChild('searchForm')private form:NgForm;
+// @ViewChild('searchForm') form:NgForm;
   loadedProviderId:string;
   title:string;
   skeltonLength=Array(7)
   registeredProvider:RegProviders[]=[];
-  filteredOptions:Observable<RegProviders[]>;
+  filteredOptions:RegProviders[]=[]
   allProviders:HealthProvider[];
   myProvider:HealthProvider;
   searchOpen:boolean=false;
@@ -71,15 +71,7 @@ export class SearchComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // if(this.form){
-    //   this.filteredOptions = this.form.valueChanges
-    //   .pipe(
-    //     startWith(''),
-    //     map(value => this._filter(value))
-    //   );
-      
-    //   console.log(this.filteredOptions)
-    // }
+   
   }
 
   ionViewWillEnter(){
@@ -122,10 +114,9 @@ export class SearchComponent implements OnInit {
         console.log(el.photo)
       })
       console.log(this.registeredProvider);
+    this.filteredOptions=this.registeredProvider;
       this.isLoading=false;
-      
-      
-   
+     
     },
     err=>{
       this.isLoading=false;
@@ -138,52 +129,82 @@ export class SearchComponent implements OnInit {
   // Search filters Open and Close
   onSearch(){
     this.searchOpen=!this.searchOpen;
-    // console.log(this.form)
   }
 
   submit(form:NgForm){
-    this.search.slot.length=0;
-    this.search.slot.push({
-      availableDays:this.availableDays,
-      availableTimes:[],
-    });
-    console.log(this.search)
+    // this.search.slot.length=0;
+    // this.search.slot.push({
+    //   availableDays:this.availableDays,
+    //   availableTimes:[],
+    // });
+    // console.log(this.search)
+
+    // if(this.search.name=='' && this.search.gender=='' && this.availableDays=='' 
+    // && this.search.speciality==''){
+      this.filteredOptions=this.registeredProvider;
+    // }
+
+
+    if(this.search.name!==""){
+      const filterValue=this.search.name.toLowerCase().replace(/\s/g,'');;
+      this.filteredOptions=this.filteredOptions.filter(el=>{
+          return el.name.toLowerCase().replace(/\s/g,'').includes(filterValue)
+      })
+      console.log(this.filteredOptions)
+    }
+
+    if(this.search.gender!==""){
+      const filterValue=this.search.gender.toLowerCase();
+      this.filteredOptions=this.filteredOptions.filter(el=>{
+          return el.gender.toLowerCase()==filterValue;
+      })
+      console.log(this.filteredOptions)
+    }
+
+    if(this.search.speciality!==""){
+      const filterValue=this.search.speciality.toLowerCase().replace(/\s/g,'');;
+      this.filteredOptions=this.filteredOptions.filter(el=>{
+          return el.speciality.toLowerCase().replace(/\s/g,'').includes(filterValue)
+      })
+      console.log(this.filteredOptions)
+    }
+
+    if(this.availableDays!==""){
+      const filterValue=this.availableDays.toLowerCase();
+      console.log(filterValue)
+      this.filteredOptions=this.filteredOptions.filter(el=>{
+        // console.log(el);
+        
+       return !!(el.slots.find((myslot)=>{
+          //  console.log(myslot)
+            // if(myslot.availableDays.toLowerCase().includes(filterValue)){
+            //   return el;
+            // }
+            return myslot.availableDays.toLowerCase().includes(filterValue)
+           
+          }))
+      })
+      console.log(this.filteredOptions)
+      // let slotFilter:RegProviders[]=[]
+      // this.filteredOptions.forEach(el=>{
+      //    for(let i=0;i<el.slots.length;i++){
+      //      if(el.slots[i].availableDays==this.availableDays){
+      //       slotFilter.push(el);
+      //      }
+      //    }
+
+      // })
+      // this.filteredOptions=slotFilter;
+    }
     
-    this.mainServ.searchFor(this.loadedProviderId,this.search)
-    // // if(this.form){
-    //   this.filteredOptions = this.form.valueChanges
-    //   .pipe(
-    //     // take(1),
-    //     startWith(''),
-    //     map(value => this._filter(value))
-    //   );
-    //   this.filteredOptions.subscribe(res=>console.log(res))
-    //   console.log(this.filteredOptions)
-    // // }
+
+
+
+    // this.mainServ.searchFor(this.loadedProviderId,this.search)
+    
   }
 
-  // private _filter(value: RegProviders): RegProviders[] {
-  //   console.log('entering filter method',value)
-  //   if(value.name){
-  //     console.log('name entered')
-  //     const filterValue = value.name.toLowerCase();
-  //   // console.log(this.dataSource)
-  //   return this.registeredProvider.filter(option => option.name.toLowerCase().includes(filterValue));
-  //   }
-
-  //   if(value.gender){
-  //     const filterValue = value.gender.toString()
-  //   // console.log(this.dataSource)
-  //   return this.registeredProvider.filter(option => option.gender.toString().includes(filterValue));
-  //   }
-
-  //   if(value.speciality){
-  //     const filterValue = value.speciality.toLowerCase();
-  //   // console.log(this.dataSource)
-  //   return this.registeredProvider.filter(option => option.speciality.toLowerCase().includes(filterValue));
-  //   }
-    
-  // }
+  
   // Search filters Open and Close
 
 

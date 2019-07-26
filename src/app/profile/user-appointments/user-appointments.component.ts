@@ -61,4 +61,14 @@ userAppointments:FixAppointment[]=[]
     }
 
   }
+
+  getColor( status: string){
+    console.log(status);
+    switch (status){
+      case 'pending': return'#def5fa' ;
+      case 'confirmed': return '#ffffcc';
+      case 'completed': return '#daffcc';
+      case 'canceled': return '#ffe2e0';
+    }
+  }
 }

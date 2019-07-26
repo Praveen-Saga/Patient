@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Platform, Events } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { MainService } from './main.service';
 import { Plugins, Capacitor} from '@capacitor/core'
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { Signup } from './app.model';
 
 
 
@@ -17,6 +16,7 @@ import { take } from 'rxjs/operators';
 export class AppComponent implements OnInit,OnDestroy{
   isAuth:boolean;
   authSub:Subscription;
+  loadedUserDetails:Signup;
   constructor(
     private platform: Platform,
     public events:Events,
@@ -28,12 +28,18 @@ export class AppComponent implements OnInit,OnDestroy{
       this.events.subscribe('Auth:Changed',(isAuth)=>{
         console.log(isAuth,'form Events')
         this.isAuth=isAuth; 
+        if(this.isAuth){
+          this.getUserDetails();
+       }
       })
+
+    
   }
 
   ngOnInit(){
     this.getAuthStatus();
-  
+    
+   
     // this.mainServ.getSubscribeSuccess()
     // .pipe(take(1))
     // .subscribe(res=>{
@@ -58,6 +64,22 @@ export class AppComponent implements OnInit,OnDestroy{
     this.authSub=this.mainServ.userIsAuthorized.pipe(take(1)).subscribe(res=>{
       this.isAuth=res;
       console.log(this.isAuth);
+    })
+  }
+
+  getUserDetails(){
+    this.mainServ.userId.subscribe(id=>{
+      console.log(id);
+      if(id!==null){
+        this.mainServ.userDetails(id).subscribe(res=>{
+          console.log(res);
+          this.loadedUserDetails=res;
+          console.log(this.loadedUserDetails)
+        },
+        err=>{
+          this.mainServ.errHandler(err);
+        })
+      }
     })
   }
 
