@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs';
 import { Signup, RegProviders, Availability, FixAppointment, days } from 'src/app/app.model';
 import { Router } from '@angular/router';
 import { take } from 'rxjs/operators';
+import { LoadingController } from '@ionic/angular';
+import { load } from '@angular/core/src/render3';
 
 @Component({
   selector: 'app-confirm-appointment',
@@ -52,6 +54,8 @@ export class ConfirmAppointmentComponent implements OnInit {
     email: '',
   }
   constructor(
+    private loadingCtrl:LoadingController,
+
     private router: Router,
     
     private mainServ:MainService,
@@ -120,6 +124,10 @@ export class ConfirmAppointmentComponent implements OnInit {
   
 
   submit(){
+    this.loadingCtrl.create({
+      message:'Sending request for appointment please wait...'
+    }).then(loader=>{
+      loader.present();
     let type=this.nextDay(days[this.slot.day]);
     let myDate=type.getDate()+'-'+type.getMonth()+'-'+type.getFullYear()
     console.log(typeof myDate,myDate);
@@ -153,6 +161,7 @@ export class ConfirmAppointmentComponent implements OnInit {
              
               this.mainServ.getSubscribeSuccess().pipe(take(2)).subscribe(res=>{
                 console.log(res);
+                loader.dismiss();
                 if(res){
                   this.mainServ.appointment.next(null);
                   this.mainServ.pickappointment.next(null);
@@ -172,9 +181,8 @@ export class ConfirmAppointmentComponent implements OnInit {
           }
         })
  
-    
-  }
-
-  
+      
+  })
+}
  
 }

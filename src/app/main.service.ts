@@ -308,16 +308,18 @@ searchFor(id,post){
 
 // Save Appointment
 saveAppointment(post){
-  this.http.post<FixAppointment>(environment.url+'saveAppointment',post).subscribe(res=>{
-    console.log(res);
-    if(res._id && res.patientId){
-      this.SubscribeSuccess.next(true);
-    }
-  },
-  err=>{
-    this.errHandler(err);
-  })
-  this.SubscribeSuccess.next(false);
+ 
+    this.http.post<FixAppointment>(environment.url+'saveAppointment',post).subscribe(res=>{
+      console.log(res);
+      if(res._id && res.patientId){
+        this.SubscribeSuccess.next(true);
+      }
+    },
+    err=>{
+      this.errHandler(err);
+    })
+    this.SubscribeSuccess.next(false);
+ 
 }
 // Save Appointment
 

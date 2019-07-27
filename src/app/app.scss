@@ -5,11 +5,12 @@
 // file can hold Sass mixins, functions, and placeholder classes to be imported 
 // and used throughout the application.
 
+
 ion-footer ion-toolbar{
     text-align: center;
     overflow: hidden;
     white-space: nowrap;
-    width: 150%;
+    width: 33rem;
 }
 .scroll{
     white-space: nowrap;
