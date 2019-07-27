@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { Platform, Events } from '@ionic/angular';
+import { Platform, Events, AlertController } from '@ionic/angular';
 import { MainService } from './main.service';
 import { Plugins, Capacitor} from '@capacitor/core'
 import { Subscription } from 'rxjs';
@@ -15,11 +15,13 @@ import { Signup } from './app.model';
 })
 export class AppComponent implements OnInit,OnDestroy{
   isAuth:boolean;
+  isLoading:boolean=false;
   authSub:Subscription;
   loadedUserDetails:Signup;
   constructor(
     private platform: Platform,
     public events:Events,
+    private alertCtrl:AlertController,
 
     private mainServ:MainService
   ) {
@@ -68,6 +70,7 @@ export class AppComponent implements OnInit,OnDestroy{
   }
 
   getUserDetails(){
+    this.isLoading=true;
     this.mainServ.userId.subscribe(id=>{
       console.log(id);
       if(id!==null){
@@ -75,9 +78,14 @@ export class AppComponent implements OnInit,OnDestroy{
           console.log(res);
           this.loadedUserDetails=res;
           console.log(this.loadedUserDetails)
+           this.isLoading=false;
+
         },
         err=>{
-          this.mainServ.errHandler(err);
+          // this.mainServ.errHandler(err);
+          console.log(err);
+          this.isLoading=false;
+
         })
       }
     })
@@ -97,6 +105,29 @@ export class AppComponent implements OnInit,OnDestroy{
   }
   // Share App
 
+  // exitApp
+  exitApp(){
+    this.alertCtrl.create({
+      header:'Are you sure?',
+      message:'Do you want to exit the app',
+      buttons:[
+        {
+          text:'Cancel',
+          role:'cancel'
+        },
+        {
+          text:'Exit',
+          handler:()=>{
+            this.mainServ.exitApp();
+          }
+        }
+      ]
+    }).then(alertEl=>{
+      alertEl.present();
+    })
+  }
+
+  // exitApp
 // Logout
   logout(){
     this.mainServ.logout();
@@ -109,4 +140,10 @@ ngOnDestroy(){
  
 }
 
+doRefresh(event) {
+  this.getUserDetails();
+  if(this.isLoading=true){
+    event.target.complete();
+  }
+}
 }

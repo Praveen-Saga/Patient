@@ -132,6 +132,7 @@ export class SearchComponent implements OnInit {
   }
 
   submit(form:NgForm){
+    this.isLoading=true;
     // this.search.slot.length=0;
     // this.search.slot.push({
     //   availableDays:this.availableDays,
@@ -198,6 +199,7 @@ export class SearchComponent implements OnInit {
     }
     
 
+    this.isLoading=false;
 
 
     // this.mainServ.searchFor(this.loadedProviderId,this.search)

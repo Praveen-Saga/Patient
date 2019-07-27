@@ -1,7 +1,8 @@
 {
-  "appId": "io.ionic.starter",
+  "appId": "com.homecare.users",
   "appName": "hcpatient",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www"
+ 
 }

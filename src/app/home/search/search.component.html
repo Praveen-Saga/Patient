@@ -14,22 +14,31 @@
         <ion-refresher-content></ion-refresher-content>
       </ion-refresher>
  <!-- Data to display after skeleton screen -->
-<div *ngIf="registeredProvider.length>0">
-    <ion-grid>
-      <ion-row text-center>
+<div *ngIf="!isLoading">
+
+    <ion-grid >
+  <ion-row *ngIf='!registeredProvider.length>0'>
+    <ion-col>
+    <ion-label>
+    No providers available for this service..
+    </ion-label>
+    </ion-col>
+  </ion-row>
+
+      <ion-row text-center *ngIf='registeredProvider.length>0'>
         <ion-col >
-          <ion-title>Search Best Doctor For You </ion-title>
-        <ion-button (click)='onSearch()' color='secondary'>
+          <!-- <ion-title no-padding>Search Best Doctor For You </ion-title> -->
+        <ion-button (click)='onSearch()' color='secondary'  fill='outline'> click to search
         <!-- > -->
           <!-- expand='block' fill='outline' to Search Best Doctor For You -->
-            Click 
+            <!-- Click  -->
           </ion-button>
         </ion-col>
       </ion-row>
       <ion-row 
       *ngIf='searchOpen'>
       <!-- [style.visibility]="searchOpen ? 'visible' : 'hidden'"> -->
-        <ion-col>
+        <ion-col >
           <ion-card >
               <form name='form' #searchForm='ngForm' 
                (ngSubmit)='submit(searchForm)'>
@@ -38,7 +47,7 @@
                       <ion-col>
                           <ion-item>
                               <ion-label position="floating">Name</ion-label>
-                              <ion-input type='text' name='name' [(ngModel)]='search.name' (keyup)='submit()'>
+                              <ion-input type='text' name='name' [(ngModel)]='search.name' (ionChange)='submit()'>
                               <!-- (ngModelChange)='submit()'> -->
                             </ion-input>
                             </ion-item>
@@ -58,9 +67,9 @@
                       </ion-row>
                       <ion-row no-padding *ngIf="title=='Doctor'"> 
                           <ion-col>
-                              <ion-item (keyup)='submit()'>
+                              <ion-item >
                                   <ion-label position="floating">speciality</ion-label>
-                                  <ion-input type='text' name='name' [(ngModel)]='search.speciality'></ion-input>
+                                  <ion-input type='text' name='name' [(ngModel)]='search.speciality' (ionChange)='submit()'></ion-input>
                                 </ion-item>
                           </ion-col>
                         </ion-row>
@@ -117,7 +126,7 @@
         </ion-label>
       </ion-item>
     </ion-list> -->
-    <div *ngIf='!filteredOptions?.length>0' text-center>No Matching Selections</div>
+    <div *ngIf='registeredProvider.length>0 && !filteredOptions?.length>0' text-center>No Selections Available</div>
 
     <ion-list *ngIf='filteredOptions?.length>0'>
       <!--  -->
@@ -145,7 +154,7 @@
   </div>
   
   <!-- Skeleton screen -->
-  <div *ngIf="!registeredProvider.length>0">
+  <div *ngIf="isLoading">
     <div class="ion-padding custom-skeleton">
       <ion-skeleton-text animated style="height: 30%"></ion-skeleton-text>
     </div>

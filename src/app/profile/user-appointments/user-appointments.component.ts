@@ -71,4 +71,5 @@ userAppointments:FixAppointment[]=[]
       case 'canceled': return '#ffe2e0';
     }
   }
+
 }

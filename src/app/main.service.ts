@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { Subject, EMPTY, BehaviorSubject, from, of } from 'rxjs';
 import { HealthProvider, RegProviders, User, Signup, Appointment, FixAppointment } from './app.model';
 import { catchError, shareReplay, retry, map, tap, take, switchMap } from 'rxjs/operators';
-import { Plugins } from '@capacitor/core';
+import { Plugins, AppState } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root'
@@ -332,10 +332,15 @@ shareApp(){
 const { Share } = Plugins;
   Share.share({
     title: 'Share this app',
-    text: 'Really awesome thing you need to see right meow',
+    text: 'Home Care Portal',
     url: 'https://play.google.com/store/apps/details?id=com.facebook.katana&hl=en_IN',
     dialogTitle: 'Share with buddies'
   });
+}
+
+exitApp(){
+  const { App } = Plugins;
+  App.exitApp();
 }
 // Sharing App
 

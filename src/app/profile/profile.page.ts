@@ -13,6 +13,7 @@ import { Events } from '@ionic/angular';
 export class ProfilePage implements OnInit,OnDestroy {
   authSub: Subscription;
   isAuth: boolean=false;
+  isLoading: boolean=false;
   userId: string;
   loadedUserDetails:Signup;
   constructor(
@@ -33,26 +34,31 @@ export class ProfilePage implements OnInit,OnDestroy {
       this.isAuth=res;
       console.log(this.isAuth);
       if(this.isAuth){
-        this.mainServ.userId.subscribe(id=>{
-          console.log(id);
-          if(id!==null){
-            this.mainServ.userDetails(id).subscribe(res=>{
-              console.log(res);
-              this.loadedUserDetails=res;
-              console.log(this.loadedUserDetails)
-            },
-            err=>{
-              this.mainServ.errHandler(err);
-            })
-          }
-          // else{
-          //   this.router.navigateByUrl('/login')
-          // }
+        this.getUserDetails();
+      }
+    })
+  }
+  
+  getUserDetails(){
+  this.isLoading=true;
+
+    this.mainServ.userId.subscribe(id=>{
+      console.log(id);
+      if(id!==null){
+        this.mainServ.userDetails(id).subscribe(res=>{
+          console.log(res);
+          this.loadedUserDetails=res;
+          console.log(this.loadedUserDetails)
+         this.isLoading=false;
+
+        },
+        err=>{
+           this.isLoading=false;
+          this.mainServ.errHandler(err);
         })
       }
     })
   }
- 
 
   shareApp(){
     this.mainServ.shareApp();
@@ -66,6 +72,13 @@ export class ProfilePage implements OnInit,OnDestroy {
     this.authSub.unsubscribe();
   }
   ngOnDestroy(){
+  }
+
+  doRefresh(event) {
+    this.getUserDetails();
+    if(this.isLoading=true){
+      event.target.complete();
+    }
   }
 
 }
