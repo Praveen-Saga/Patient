@@ -33,13 +33,12 @@
           <!-- My Card Model -->
 
           <!-- Icon Model -->
-    <ion-col size='3' *ngFor='let provider of serviceProviders' text-center padding-vertical>
+    <ion-col size='3' size-md='2.4' *ngFor='let provider of serviceProviders' text-center padding-vertical>
         <ion-buttons [routerLink]='[provider._id]'>
           <ion-avatar style="border:2px solid lightblue;">
               <ion-img [src]='provider.icon' style="height:100%;width: 100%;"></ion-img>
               <ion-label style="font-size: 0.8em">{{provider.providerName}}</ion-label>
           </ion-avatar>
-
         </ion-buttons>
     </ion-col>
           <!-- Icon Model -->

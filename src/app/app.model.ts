@@ -101,7 +101,7 @@ export class Appointment{
 export interface FixAppointment{
         _id:string,
         patientId:string,
-        status:'pending'|'confirmed'|'completed'| 'canceled'
+        status:'pending'|'confirmed'|'completed'| 'cancelled'
         patientname:string,
         address:string,
         doctorname:string,

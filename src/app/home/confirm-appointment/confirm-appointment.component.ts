@@ -168,7 +168,7 @@ export class ConfirmAppointmentComponent implements OnInit {
                   this.slot.date='';
                   this.slot.day='';
                   this.slot.time='';
-                  this.mainServ.alertHandler('Request Sent','Request for Appointment is sent for'+this.loadedActorDetails.name+'\nFurther Details will be informed after Confirmation.');
+                  this.mainServ.alertHandler('Request Sent','Request for Appointment is sent for '+this.loadedActorDetails.name+' \nFurther Details will be informed after Confirmation.');
                   this.router.navigateByUrl('/home');
                 }
               })
@@ -178,6 +178,8 @@ export class ConfirmAppointmentComponent implements OnInit {
           }
           else{
                this.router.navigateByUrl('/login');
+               loader.dismiss();
+
           }
         })
  
