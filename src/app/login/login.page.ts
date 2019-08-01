@@ -38,4 +38,20 @@ export class LoginPage implements OnInit {
       }
     })
   }
+
+  fbLogin(){
+    console.log('Facebook Login...');
+    FB.getLoginStatus((response) => {
+      if (response.status === 'connected') {
+          
+      }
+      else {
+          FB.login((loginResponse)=>{
+            this.mainServ.fblogin();
+          });
+      }
+  });
+// }
+   
+  }
 }

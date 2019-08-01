@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable, OnInit, Provider } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { LoadingController, AlertController, Events } from '@ionic/angular';
@@ -7,6 +7,13 @@ import { Subject, EMPTY, BehaviorSubject, from, of } from 'rxjs';
 import { HealthProvider, RegProviders, User, Signup, Appointment, FixAppointment } from './app.model';
 import { catchError, shareReplay, retry, map, tap, take, switchMap } from 'rxjs/operators';
 import { Plugins, AppState } from '@capacitor/core';
+
+// facebook login
+import { registerWebPlugin } from '@capacitor/core';
+import { FacebookLogin } from '@rdlabo/capacitor-facebook-login';
+import { stat } from 'fs';
+registerWebPlugin(FacebookLogin);
+// facebook login
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +25,7 @@ export class MainService implements OnInit{
   private _user=new BehaviorSubject<User>(null);
   pickappointment=new BehaviorSubject<RegProviders>(null)
   appointment=new BehaviorSubject<Appointment>(null)
-  
+ 
 
   constructor(
     private http: HttpClient,
@@ -29,6 +36,7 @@ export class MainService implements OnInit{
     private alertCtrl:AlertController,
     public events:Events,
   ) { 
+  
 
   }
   
@@ -258,6 +266,9 @@ map(user=>{
 // LogOut
     logout(){
       this._user.next(null);
+      if(!!(Plugins.FacebookLogin.getCurrentAccessToken())){
+        Plugins.FacebookLogin.logout();
+      }
       Plugins.Storage.remove({key:'loginData'});
       this.userIsAuthorized;
       this.router.navigateByUrl('/home');
@@ -346,7 +357,87 @@ exitApp(){
 }
 // Sharing App
 
+// FB LOgin
 
+
+fblogin(){
+
+//Capacitor PLUGIN Methods
+  const FACEBOOK_PERMISSIONS = ['email', 'user_birthday', 'user_photos', 'user_gender'];
+  const fb=Plugins.FacebookLogin
+  // getting status
+          // const status=FB.status;
+          // console.log(status);
+  // getting status
+  
+  // Get current Token
+  const loadedToken = fb.getCurrentAccessToken().__zone_symbol__value.accessToken.token;
+  const status = fb.getCurrentAccessToken().__zone_symbol__state;
+
+if (loadedToken) {
+  console.log(fb.getCurrentAccessToken(),status,loadedToken);//`Facebook access token is ${loadedToken.accessToken.token}`,
+  // this.alertHandler('Already Logged In:',status)
+  this.sendTokenForFBLogin(loadedToken);
+
+} else {
+  // Not logged in.
+  // Login
+            const result = fb.login({ permissions: FACEBOOK_PERMISSIONS }).__zone_symbol__value;
+            console.log(result);
+          if (result.accessToken) {
+            // Login successful.
+            console.log(`Facebook access token is ${result.accessToken.token}`);
+            this.sendTokenForFBLogin(result.accessToken.token);
+
+          } else {
+            // Cancelled by user.
+            this.alertHandler('Error','Unexpected Error Occured');
+          }
+  // Login
+}
+//Capacitor PLUGIN Methods 
+// Normal Method without using @rdlabo/capacitor-facebook-login Plugin
+  // return new Promise((resolve, reject) => {
+  //   FB.login(result => {
+  //     if (result.authResponse) {
+  //    console.log(result);
+  //     } else {
+  //    console.log(result);
+  //       reject();
+  //     }
+  //   }, {scope: 'public_profile,email'})
+  // });
+// Normal Method without using @rdlabo/capacitor-facebook-login Plugin
+
+}
+// fbtoken sending for authentication method
+sendTokenForFBLogin(token){
+    this.loadingCtrl.create({
+    message:'Logging In Please Wait...'
+  }).then(
+    loader=>{
+      loader.present();
+      return this.http.post<RegProviders>(environment.url+'auth/facebook',token)
+      .subscribe(res=>{
+        loader.dismiss();
+        console.log(res);
+        // this.alertHandler('Success',"Login Successful")
+        this._user.next(new User(res._id,res.email));
+        this.storeLoginData(res._id,res.email)
+        this.router.navigateByUrl('/home');
+        this.LoginSubscribeSuccess.next(true)
+    this.events.publish('Auth:Changed',true);
+
+      },
+      err=>{
+        loader.dismiss();
+        this.errHandler(err);
+      })
+    })
+    this.LoginSubscribeSuccess.next(false);
+}
+// fbtoken sending for authentication method
+// FB LOgin
 
 
 }
